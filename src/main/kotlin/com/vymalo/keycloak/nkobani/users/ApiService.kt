@@ -6,9 +6,6 @@ import com.vymalo.keycloak.nkobani.users.openapi.client.invoker.ApiClient
 import com.vymalo.keycloak.nkobani.users.openapi.client.model.UserEntity
 import com.vymalo.keycloak.nkobani.users.openapi.client.model.UserPassword
 import feign.FeignException
-import feign.form.FormEncoder
-import feign.gson.GsonDecoder
-import feign.gson.GsonEncoder
 import feign.okhttp.OkHttpClient
 import feign.slf4j.Slf4jLogger
 import org.keycloak.models.UserModel
@@ -58,7 +55,7 @@ class ApiService(val client: ApiClient) {
 
     fun getAccount(email: String): UserEntity? = try {
         log.debug("Get user by email $email")
-        val params = GetManyBaseUsersControllerUserEntityQueryParams().filter(listOf("email||\$contL||$email"))
+        val params = GetManyBaseUsersControllerUserEntityQueryParams().filter(listOf("email||\$eq||$email"))
         val result = accountApi.getManyBaseUsersControllerUserEntity(params)
         result.data.firstOrNull { it.email == email }
     } catch (e: FeignException) {
@@ -79,11 +76,11 @@ class ApiService(val client: ApiClient) {
 
         if (query != null) queryParams.or(
             listOf(
-                "firstname||\$contL||$query",
-                "lastname||\$contL||$query",
-                "email||\$contL||$query",
-                "username||\$contL||$query",
-                "phoneNumber||\$contL||$query",
+                "firstname||\$cont||$query",
+                "lastname||\$cont||$query",
+                "email||\$cont||$query",
+                "username||\$cont||$query",
+                "phoneNumber||\$cont||$query",
             )
         )
 
